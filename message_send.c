@@ -39,6 +39,27 @@ int main()
         perror("msgsnd");
         exit(1);
     }
+
+    printf("[Proceso 1] Envio: %s\n", sbuf.mtext);
+
+    if (msgrcv(msqid, &rbuf, MSGSZ, 2, 0) < 0)
+    {
+        perror("msgrcv");
+        exit(1);
+    }
+    printf("[Proceso 1] Recibio: %s\n", rbuf.mtext);
+
+    sbuf.mtype = 3;
+    strcpy(sbuf.mtext, "I can hear you too");
+    buf_length = strlen(sbuf.mtext) + 1;
+
+    if (msgsnd(msqid, &sbuf, buf_length, IPC_NOWAIT) < 0)
+    {
+        perror("msgsnd");
+        exit(1);
+    }
+    printf("[Proceso 1] Envio: %s\n", sbuf.mtext);
+
     exit(0);
 }
 

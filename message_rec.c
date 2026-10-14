@@ -34,7 +34,27 @@ int main()
         perror("msgrcv");
         exit(1);
     }
-    printf("%s\n", rbuf.mtext);
+    printf("[Proceso 2] Recibio: %s\n", rbuf.mtext);
+
+    sbuf.mtype = 2;
+    (void)strcpy(sbuf.mtext, "Loud and clear");
+    buf_length = strlen(sbuf.mtext) + 1;
+
+    if (msgsnd(msqid, &sbuf, buf_length, IPC_NOWAIT) < 0)
+    {
+        perror("msgsnd");
+        exit(1);
+    }
+    printf("[Proceso 2] Envio: %s\n", sbuf.mtext);
+
+    if (msgrcv(msqid, &rbuf, MSGSZ, 3, 0) < 0)
+    {
+        perror("msgrcv");
+        exit(1);
+    }
+    printf("[Proceso 2] Recibio: %s\n", rbuf.mtext);
+
+    msgctl(msqid, IPC_RMID, NULL);
     exit(0);
 }
 
